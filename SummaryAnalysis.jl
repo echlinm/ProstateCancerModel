@@ -1,19 +1,26 @@
 module SummaryAnalysis
 
-using MatrixMarket,SparseArrays
+using MatrixMarket,SparseArrays,DelimitedFiles,Plots,StatsBase
 #export
 
 #Define all functions here
 #Function for importing data of different formats (MatrixMarket-mtx,...)
-function mtxImport(filename,type)
+function mtxImport(filepath,type)
     if type =="mtx"  # MatrixMarket data format
-        MatrixMarket.mmread(filename)
+        MatrixMarket.mmread("$(filepath)_filtered_matrix.mtx")
     end
 end
 
-#Specify a filename to be read
-filename = "C:\\Users\\hcmoec\\Documents\\Data_Files\\GSE117403_D17_FACS_filtered_matrix.mtx\\GSE117403_D17_FACS_filtered_matrix.mtx"
+#Specify a data directory
+data_dir = "GSE117403_D27_FACS\\GSE117403_D27_FACS"
 
-#import RNASeq data
-SeqVals = mtxImport(filename,"mtx")
+#Import RNASeq data, Gene Names, and Barcodes
+SeqVals = mtxImport(data_dir,"mtx")
+GeneNames = readdlm("$(data_dir)_filtered_genes.tsv")
+BarCodes = readdlm("$(data_dir)_filtered_barcodes.tsv")
+
+# How many nonzero expression values does each cell contain?
+CountPerCell = sum(SeqVals.!=0,dims=1) #number of nonzeros per cell barcode
+Count_hist=fit(Histogram,CountPerCell[:],[0:250:4500;]) # histogram of the number of nonzeros per cell barcode
+bar(Count_hist.weights)
 end
