@@ -6,7 +6,7 @@ function HD(SeqVals,N)
     SeqVals .= SeqVals.>0 #Binarize SeqVals
     G,C = size(SeqVals) #Number of genes and cells
     Seq_HD = fill(0.0,N) #Initialized vector of Hamming Distance between cells
-    PairIJ = reshape(sample([1:C;],N*2,replace=false),N,2) # Cell pair indices
+    PairIJ = reshape(sample([1:C;],N*2,replace=true),N,2) # Cell pair indices
     for i = 1:N
         Seq_HD[i] = sum(xor.(SeqVals[:,PairIJ[i,1]],SeqVals[:,PairIJ[i,2]])) / G # Compare Cell 1 to Cell 2,
     end #for
