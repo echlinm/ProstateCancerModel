@@ -1,26 +1,30 @@
 module SummaryAnalysis
 
-using MatrixMarket,SparseArrays,DelimitedFiles,Plots,StatsBase
+include("MatrixImport.jl") #function for importing data
+include("ExpressionCount.jl") # function for generating a histogram of expression counts per cell
+include("RNA_HD.jl") # function for generating a histogram of Hamming distances between pairs of cells
+using SparseArrays
 #export
 
-#Define all functions here
-#Function for importing data of different formats (MatrixMarket-mtx,...)
-function mtxImport(filepath,type)
-    if type =="mtx"  # MatrixMarket data format
-        MatrixMarket.mmread("$(filepath)_filtered_matrix.mtx")
-    end
-end
+#function run()
+## Load Data
+#Load D17 data
+data_dir = "GSE117403_D17_FACS\\GSE117403_D17_FACS"; #Specify a data directory
+SeqVals_17 = MatrixImport.mtxImport(data_dir,"mtx"); #load data
 
-#Specify a data directory
-data_dir = "GSE117403_D27_FACS\\GSE117403_D27_FACS"
+#Load D27 data
+data_dir = "GSE117403_D27_FACS\\GSE117403_D27_FACS"; #Specify a data directory
+SeqVals_27 = MatrixImport.mtxImport(data_dir,"mtx"); #load data
 
-#Import RNASeq data, Gene Names, and Barcodes
-SeqVals = mtxImport(data_dir,"mtx")
-GeneNames = readdlm("$(data_dir)_filtered_genes.tsv")
-BarCodes = readdlm("$(data_dir)_filtered_barcodes.tsv")
+#Load Pd data
+data_dir = "GSE117403_Pd\\GSE117403_Pd"; #Specify a data directory
+SeqVals_Pd = MatrixImport.mtxImport(data_dir,"mtx"); #load data
 
+## Compare Data
 # How many nonzero expression values does each cell contain?
-CountPerCell = sum(SeqVals.!=0,dims=1) #number of nonzeros per cell barcode
-Count_hist=fit(Histogram,CountPerCell[:],[0:250:4500;]) # histogram of the number of nonzeros per cell barcode
-bar(Count_hist.weights)
-end
+ExpressionCount.expHist(SeqVals_17,SeqVals_27,SeqVals_Pd)
+# What is the average and deviation of the Hamming distance between cells?
+# Is this different in different patients?
+RNA_HD.analysis([SeqVals_17 SeqVals_27],10000,"D17D27")
+#end #function
+end #module
