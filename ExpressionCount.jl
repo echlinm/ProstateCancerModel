@@ -19,7 +19,7 @@ function expHist(SeqVals_17,SeqVals_27,SeqVals_Pd)
         ytickfont=font(10),
         guidefont=font(12),
         legendfont = font(10),
-        label = ["Donor 17" "Donor 27" "Peripheral/Transition Zones"],
+        label = ["Donor 17" "Donor 27" "D17/27/35"],
         title = "Henry et al. Single Cell Data",
         framestyle=:box)
     savefig(fig,"Henryetal_ExpressedGenesHist.png");
