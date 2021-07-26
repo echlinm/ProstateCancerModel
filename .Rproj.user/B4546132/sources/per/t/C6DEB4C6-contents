@@ -1,0 +1,33 @@
+cell_barcodes = read.delim(arg[2],header=FALSE) #vector of cell barcodes
+gene_names <- read.delim("GSE117403_Pd_filtered_genes.tsv",header=FALSE) #vector of gene names
+rownames(expression_matrix) <- gene_names$V2
+colnames(expression_matrix) <- cell_barcodes$V1
+
+
+
+### subset expression matrix for QC
+QC_IDX = read.delim("Pd_NonStressedCell_Idx.tsv", header=FALSE) #indices of QC cells
+rowIDX = 1:dim(expression_matrix)[1] #row indices used to subset matrix
+expression_matrix <- expression_matrix[rowIDX,QC_IDX$V1]
+
+
+### Subset expression matrix for cells of interest
+# Phenotypes of Interest
+LOI = "Epi"
+DOI = "D35"
+POI = "BE"
+
+#Lineage
+lineage = read.delim("PdF_Barcode_id.Lineage.aggr.csv", ',', header = FALSE)$V2 
+#Donor
+donor = read.delim("PdF_Barcode_id.Patient.aggr.csv",',',header=FALSE)$V2 
+#Phenotype
+pheno = read.delim("PdF_Barcode_id.Populations.aggr.csv",',',header =FALSE)$V2
+#Subset index
+SS_IDX = lineage==LOI & donor==DOI & pheno==POI
+
+#subset (specify all if you don't need to subset
+set.seed(1)
+randomized_indices <- sample(1:dim(expression_phen)[2])
+Sample_n = "2of2"
+Sample_IDX <- randomized_indices[2766:5531]
