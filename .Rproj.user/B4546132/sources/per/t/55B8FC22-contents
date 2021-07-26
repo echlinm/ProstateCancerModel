@@ -1,5 +1,0 @@
-# Set library default location
-myPaths <-.libPaths()
-myPaths <-(c(myPaths, "C:/Users/ChuperDuper/Documents/CytoTRACE/4.0/"))
-myPaths <- c(myPaths[3], myPaths[1], myPaths[2])
-.libPaths(myPaths)
