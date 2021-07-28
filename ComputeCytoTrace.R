@@ -15,16 +15,13 @@ arg = commandArgs(trailingOnly=TRUE)
 
 library(CytoTRACE)
 
-###load cytotrace function modified for dgCMatrix format
-source("CytoTraceMod.R")
-
 ### load RNAseq data
 # load libraries
 library(Matrix)
 # load expression matrix
 expression_matrix <- readMM(arg[1])
 # convert from dgTMatrix to dgCMatrix
-expression_matrix <- as(expression_matrix[1:dim(expression_matrix)[1],],"dgCMatrix") #subset matrix and then convert from dgTMatrix to dgCMatrix
+expression_matrix <- as.data.frame(as.matrix(expression_matrix)) #convert from dgTMatrix to data.frame
 
 
 #Create phenotype info
@@ -33,7 +30,7 @@ names(pheno_string) <- variable.names(expression_matrix) #add barcode label name
 
 
 ### run CytoTrace
-results <- CytoTRACE_mod(expression_matrix)
+results <- CytoTRACE(expression_matrix)
 
 
 ### Plot results
