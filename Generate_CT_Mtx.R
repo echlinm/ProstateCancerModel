@@ -11,7 +11,7 @@ arg = commandArgs(trailingOnly=TRUE)
 ## Import expression matrix
 library(Matrix)
 # load expression matrix
-expression_matrix <- readMM(c(arg[1],"_matrix.mtx"))
+expression_matrix <- readMM(paste0(arg[1],"_matrix.mtx"))
 
 ## Add cell names 
 colnames(expression_matrix) <- read.delim(paste0(arg[1],"_barcodes.tsv"),header=FALSE)$V1
