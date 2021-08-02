@@ -1,11 +1,11 @@
 ## CytoTRACE.R takes in QC-processed RNA-seq data and calculates cytoTRACE values for all cells
-## Requires : Matrix, CytoTraceMod.R
+## Requires : cytoTRACE, Matrix
+## Inputs: _matrix.mtx, _barcodes.tsv, _genes.tsv, _phenotypes.tsv
 
 ### Command inputs
 arg = commandArgs(trailingOnly=TRUE)
 #arg[1] = expression matrix
-#arg[2] = phenotype vector 
-#arg[3] = output name
+#arg[2] = output name
 
 ###load cytotrace
 # contains:
@@ -19,14 +19,19 @@ library(CytoTRACE)
 # load libraries
 library(Matrix)
 # load expression matrix
-expression_matrix <- readMM(arg[1])
+expression_matrix <- readMM(paste0(arg[1],"_matrix.mtx"))
+## Add cell names 
+colnames(expression_matrix) <- read.delim(paste0(arg[1],"_barcodes.tsv"),header=FALSE)$V1
+## Add gene names
+rownames(expression_matrix) <- read.delim(paste0(arg[1],"_genes.tsv"),header=FALSE)$V2
 # convert from dgTMatrix to dgCMatrix
 expression_matrix <- as.data.frame(as.matrix(expression_matrix)) #convert from dgTMatrix to data.frame
 
 
 #Create phenotype info
-pheno_string <- read.delim(arg[2],',',header=FALSE)$V2 #phenotype string
-names(pheno_string) <- variable.names(expression_matrix) #add barcode label names 
+phenotypes <- read.delim(paste0(arg[1],"_phenotypes.tsv"),header=TRUE)
+pheno_string <- phenotypes$Phenotype #phenotype string
+names(pheno_string) <- rownames(phenotypes) #add barcode label names 
 
 
 ### run CytoTrace
@@ -41,7 +46,9 @@ results <- CytoTRACE(expression_matrix)
 #     plotCytoGenes(results, options...)
 #       numofGenes = ... number of genes to display
 
-plotCytoTRACE(results,phenotype=pheno_string, outputDir=paste0("./CytoTrace Results/",arg[3],"_"))
+plotCytoTRACE(results,phenotype=pheno_string, outputDir=arg[2])
 
 
-plotCytoGenes(results, numOfGenes = 10, outputDir=paste0("./CytoTrace Results/",arg[3],"_"))
+plotCytoGenes(results, numOfGenes = 10, outputDir=arg[2])
+
+
