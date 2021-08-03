@@ -46,9 +46,9 @@ results <- CytoTRACE(expression_matrix)
 #     plotCytoGenes(results, options...)
 #       numofGenes = ... number of genes to display
 
-plotCytoTRACE(results,phenotype=pheno_string, outputDir=arg[2])
+plotCytoTRACE(results,phenotype=pheno_string, outputDir=paste0(arg[2],"_"))
 
 
-plotCytoGenes(results, numOfGenes = 10, outputDir=arg[2])
+plotCytoGenes(results, numOfGenes = 10, outputDir=paste0(arg[2],"_"))
 
 
