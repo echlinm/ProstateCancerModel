@@ -57,7 +57,7 @@ for(i in 1:length(ndims)) {
     
     #Cluster Cells
     expression_obj <- FindNeighbors(expression_obj, dims = 1:ndims[i])
-    expression_obj <- FindClusters(expression_obj, resolution = rez[i])
+    expression_obj <- FindClusters(expression_obj, resolution = rez[j])
     cluster_ids <- Idents(expression_obj)
     
     
