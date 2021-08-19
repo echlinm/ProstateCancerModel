@@ -14,7 +14,7 @@ function subset(data_dir,set_dir,set_type)
     end
     if isfile(set_dir) #if the subset list is in file form
         SubNames = readdlm(set_dir); #Matrix of all names in the desired subset
-        Matches = SetNames[:,2] .== reshape(SubNames,1,length(SubNames)); #Compare the two sets to find the indices of the subset in the full set
+        Matches = SetNames[:,end] .== reshape(SubNames,1,length(SubNames)); #Compare the two sets to find the indices of the subset in the full set
         CartIdx=findall(Matches); #The Cartesian indices of the subset
         SetIdx = repeat([1:size(SetNames,1);],1,length(SubNames))[CartIdx] #The Linear Indices of the subset
     else
@@ -24,6 +24,18 @@ function subset(data_dir,set_dir,set_type)
     SetIdx
 end#function
 
-
+function uniquestates(state_mtx,dim)
+    b = 2 .^[size(state_mtx)[dim]-1:-1:0;]
+    if dim == 1
+        integer_states = permutedims(state_mtx) * b
+        unique_states = unique(integer_states)
+        unique_idx = indexin(unique_states,integer_states)
+    elseif dim == 2
+        integer_states = state_mtx * b
+        unique_states = unique(integer_states)
+        unique_idx = indexin(unique_states,integer_states)
+    end
+    unique_idx
+end #function
 
 end#module
